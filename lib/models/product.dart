@@ -17,9 +17,27 @@ double hitungDiskon(double harga, {double persenDiskon = 0.0}) {
 class Product {
   int id;
   String name;
+  double price;
+  String category;
+  int stock;
+  String? imageUrl;
   String? description;
 
-  Product({required this.id, required this.name, this.description});
+  Product({
+    required this.id,
+    required this.name,
+    required this.price,
+    required this.category,
+    required this.stock,
+    this.imageUrl,
+    this.description,
+  });
+
+  String getStatusStok() {
+    if (stock > 10) return 'Tersedia';
+    if (stock > 0 && stock <= 10) return 'Stok Terbatas';
+    return 'Habis';
+  }
 }
 
 class DiscountedProduct extends Product {
@@ -28,9 +46,38 @@ class DiscountedProduct extends Product {
   DiscountedProduct({
     required int id, 
     required String name, 
+    required double price,       
+    required String category,    
+    required int stock,          
     String? description, 
     required this.discount
-  }) : super(id: id, name: name, description: description); 
+  }) : super(
+          id: id, 
+          name: name, 
+          price: price,          
+          category: category,    
+          stock: stock,         
+          description: description
+        ); 
+}
+
+List<Product> dummyProducts = [
+  Product(id: 1, name: 'Kemeja Flanel', price: 120000, category: 'Fashion', stock: 15, description: 'Nyaman dipakai.'),
+  Product(id: 2, name: 'Kaos Polos', price: 50000, category: 'Fashion', stock: 5), // Tanpa description
+  Product(id: 3, name: 'Sepatu Sneakers', price: 250000, category: 'Fashion', stock: 0),
+  Product(id: 4, name: 'Laptop Gaming', price: 15000000, category: 'Elektronik', stock: 2, description: 'RTX 4060.'),
+  Product(id: 5, name: 'Mouse Wireless', price: 150000, category: 'Elektronik', stock: 20),
+  Product(id: 6, name: 'Keripik Kentang', price: 15000, category: 'Makanan', stock: 50, description: 'Rasa Balado.'),
+  Product(id: 7, name: 'Cokelat Batang', price: 25000, category: 'Makanan', stock: 8),
+  Product(id: 8, name: 'Headphone Bluetooth', price: 350000, category: 'Elektronik', stock: 12),
+];
+
+double hitungTotalBelanja(List<Product> keranjang) {
+  double total = 0;
+  for (var produk in keranjang) {
+    total += produk.price;
+  }
+  return total;
 }
 
 void main() {
@@ -117,7 +164,6 @@ void main() {
   }
   print('Diskon kategori $kategori: $diskon%\n');
 
-
   // # LANGKAH 4
   print('Function');
   
@@ -131,12 +177,21 @@ void main() {
   // # LANGKAH 5
   print('Class & Object');
   
-  Product barang1 = Product(id: 1, name: 'Baju');
+  Product barang1 = Product(
+    id: 1, 
+    name: 'Baju',
+    price: 100000,
+    category: 'Fashion',
+    stock: 10
+  );
   print('Objek 1: ${barang1.name}, Deskripsi: ${barang1.description}');
 
   DiscountedProduct barang2 = DiscountedProduct(
     id: 2, 
     name: 'Celana', 
+    price: 150000,
+    category: 'Fashion',
+    stock: 5,
     discount: 50.0,
     description: 'Diskon cuci gudang'
   );

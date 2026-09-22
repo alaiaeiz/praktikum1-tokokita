@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'models/product.dart'; // Import model & dummyProducts dari Pertemuan 2
-import 'widgets/product_card.dart'; // Import widget ProductCard dari Pertemuan 3
+import 'models/product.dart';
+import 'widgets/product_card.dart'; 
 
 void main() {
   runApp(const MyApp());
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'TokoKita',
-      debugShowCheckedModeBanner: false, // Menghilangkan banner DEBUG di pojok kanan atas
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
@@ -36,7 +36,6 @@ class HomePage extends StatelessWidget {
       body: ListView.builder(
         itemCount: dummyProducts.length,
         itemBuilder: (context, index) {
-          // Memanggil ProductCard untuk setiap item di dummyProducts
           return ProductCard(product: dummyProducts[index]);
         },
       ),

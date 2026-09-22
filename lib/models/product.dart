@@ -63,7 +63,7 @@ class DiscountedProduct extends Product {
 
 List<Product> dummyProducts = [
   Product(id: 1, name: 'Kemeja Flanel', price: 120000, category: 'Fashion', stock: 15, description: 'Nyaman dipakai.'),
-  Product(id: 2, name: 'Kaos Polos', price: 50000, category: 'Fashion', stock: 5), // Tanpa description
+  Product(id: 2, name: 'Kaos Polos', price: 50000, category: 'Fashion', stock: 5),
   Product(id: 3, name: 'Sepatu Sneakers', price: 250000, category: 'Fashion', stock: 0),
   Product(id: 4, name: 'Laptop Gaming', price: 15000000, category: 'Elektronik', stock: 2, description: 'RTX 4060.'),
   Product(id: 5, name: 'Mouse Wireless', price: 150000, category: 'Elektronik', stock: 20),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/product.dart';
 
-// --- Widget Custom Pendukung ---
 class PriceLabel extends StatelessWidget {
   final double price;
   const PriceLabel({super.key, required this.price});
@@ -49,7 +48,33 @@ class StockBadge extends StatelessWidget {
   }
 }
 
-// --- ProductCard Utama ---
+class CategoryTag extends StatelessWidget {
+  final String category;
+
+  const CategoryTag({super.key, required this.category});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(top: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        color: Colors.blue.shade50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.blue.shade200),
+      ),
+      child: Text(
+        category,
+        style: TextStyle(
+          color: Colors.blue.shade700,
+          fontSize: 11,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+}
+
 class ProductCard extends StatefulWidget {
   final Product product;
 
@@ -109,6 +134,9 @@ class _ProductCardState extends State<ProductCard> {
             ),
             const SizedBox(height: 4),
             PriceLabel(price: widget.product.price),
+            
+            // Pemanggilan widget custom CategoryTag
+            CategoryTag(category: widget.product.category),
           ],
         ),
       ),

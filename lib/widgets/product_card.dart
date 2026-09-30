@@ -18,45 +18,14 @@ class PriceLabel extends StatelessWidget {
   }
 }
 
-class StockBadge extends StatelessWidget {
-  final String status;
-  const StockBadge({super.key, required this.status});
-
-  Color _getBadgeColor() {
-    if (status == 'Tersedia') return Colors.green;
-    if (status == 'Stok Terbatas') return Colors.orange;
-    return Colors.red;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: _getBadgeColor().withOpacity(0.15),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Text(
-        status,
-        style: TextStyle(
-          color: _getBadgeColor(),
-          fontWeight: FontWeight.bold,
-          fontSize: 12,
-        ),
-      ),
-    );
-  }
-}
-
 class CategoryTag extends StatelessWidget {
   final String category;
-
   const CategoryTag({super.key, required this.category});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 6),
+      margin: const EdgeInsets.only(top: 4),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
         color: Colors.blue.shade50,
@@ -75,70 +44,151 @@ class CategoryTag extends StatelessWidget {
   }
 }
 
-class ProductCard extends StatefulWidget {
+class FavoriteButton extends StatefulWidget {
+  const FavoriteButton({super.key});
+
+  @override
+  State createState() => _FavoriteButtonState();
+}
+
+class _FavoriteButtonState extends State {
+  bool isFavorite = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      constraints: const BoxConstraints(),
+      padding: EdgeInsets.zero,
+      icon: Icon(
+        isFavorite ? Icons.favorite : Icons.favorite_border,
+        color: isFavorite ? Colors.red : Colors.grey,
+        size: 22,
+      ),
+      onPressed: () {
+        setState(() {
+          isFavorite = !isFavorite;
+        });
+      },
+    );
+  }
+}
+
+class ProductCard extends StatelessWidget {
   final Product product;
 
   const ProductCard({super.key, required this.product});
 
-  @override
-  State<ProductCard> createState() => _ProductCardState();
-}
-
-class _ProductCardState extends State<ProductCard> {
-  bool isFavorite = false;
-
-  @override
-  void initState() {
-    super.initState();
-    print('initState() dipanggil untuk: ${widget.product.name}');
-  }
-
-  @override
-  void dispose() {
-    print('dispose() dipanggil untuk: ${widget.product.name}');
-    super.dispose();
+  Color _getStockBadgeColor(String status) {
+    if (status == 'Tersedia') return Colors.green;
+    if (status == 'Stok Terbatas') return Colors.orange;
+    return Colors.red;
   }
 
   @override
   Widget build(BuildContext context) {
-    print('build() dipanggil me-render: ${widget.product.name}');
-    return Card(
-      margin: const EdgeInsets.all(8.0),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Icon(Icons.shopping_bag, size: 40, color: Colors.blue),
-                StockBadge(status: widget.product.getStatusStok()),
-                IconButton(
-                  icon: Icon(
-                    isFavorite ? Icons.favorite : Icons.favorite_border,
-                    color: isFavorite ? Colors.red : Colors.grey,
+    final bool isDiscounted = product is DiscountedProduct;
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.06),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Stack(
+            children: [
+              Container(
+                width: 90,
+                height: 90,
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade50,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(Icons.shopping_bag, size: 48, color: Colors.blue),
+              ),
+
+              Positioned(
+                top: 4,
+                left: 4,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: _getStockBadgeColor(product.getStatusStok()),
+                    borderRadius: BorderRadius.circular(4),
                   ),
-                  onPressed: () {
-                    setState(() {
-                      isFavorite = !isFavorite;
-                    });
-                  },
+                  child: Text(
+                    product.getStatusStok(),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 9,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+
+              if (isDiscounted)
+                Positioned(
+                  top: 4,
+                  right: 4,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Colors.redAccent,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      'Diskon ${(product as DiscountedProduct).discount.toInt()}%',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+
+          const SizedBox(width: 12),
+
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  product.name,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                PriceLabel(price: product.price),
+                const SizedBox(height: 4),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CategoryTag(category: product.category),
+                    const FavoriteButton(),
+                  ],
                 ),
               ],
             ),
-            const SizedBox(height: 8),
-            Text(
-              widget.product.name,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-            const SizedBox(height: 4),
-            PriceLabel(price: widget.product.price),
-            
-            // Pemanggilan widget custom CategoryTag
-            CategoryTag(category: widget.product.category),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

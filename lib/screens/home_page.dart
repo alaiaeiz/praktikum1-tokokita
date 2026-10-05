@@ -36,10 +36,7 @@ class HomePage extends StatelessWidget {
                 ),
               ],
             ),
-            IconButton(
-              icon: const Icon(Icons.shopping_cart, color: Colors.blue),
-              onPressed: () {},
-            ),
+            
           ],
         ),
       ),

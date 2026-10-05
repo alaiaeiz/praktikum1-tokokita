@@ -48,10 +48,10 @@ class FavoriteButton extends StatefulWidget {
   const FavoriteButton({super.key});
 
   @override
-  State createState() => _FavoriteButtonState();
+  State<FavoriteButton> createState() => _FavoriteButtonState();
 }
 
-class _FavoriteButtonState extends State {
+class _FavoriteButtonState extends State<FavoriteButton> {
   bool isFavorite = false;
 
   @override
@@ -88,67 +88,65 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isDiscounted = product is DiscountedProduct;
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
-            children: [
-              Container(
-                width: 90,
-                height: 90,
-                decoration: BoxDecoration(
-                  color: Colors.blue.shade50,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Icon(Icons.shopping_bag, size: 48, color: Colors.blue),
-              ),
+    return InkWell(
+      onTap: () async {
+        final result = await Navigator.pushNamed(
+          context,
+          '/detail',
+          arguments: product,
+        );
 
-              Positioned(
-                top: 4,
-                left: 4,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        if (result != null && result is int && context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Berhasil menambahkan $result item "${product.name}" ke keranjang!'),
+              backgroundColor: Colors.green,
+              behavior: SnackBarBehavior.floating,
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.06),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              children: [
+                Container(
+                  width: 90,
+                  height: 90,
                   decoration: BoxDecoration(
-                    color: _getStockBadgeColor(product.getStatusStok()),
-                    borderRadius: BorderRadius.circular(4),
+                    color: Colors.blue.shade50,
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Text(
-                    product.getStatusStok(),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 9,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  child: const Icon(Icons.shopping_bag, size: 48, color: Colors.blue),
                 ),
-              ),
-
-              if (isDiscounted)
                 Positioned(
                   top: 4,
-                  right: 4,
+                  left: 4,
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
-                      color: Colors.redAccent,
+                      color: _getStockBadgeColor(product.getStatusStok()),
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(
-                      'Diskon ${(product as DiscountedProduct).discount.toInt()}%',
+                      product.getStatusStok(),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 9,
@@ -157,38 +155,57 @@ class ProductCard extends StatelessWidget {
                     ),
                   ),
                 ),
-            ],
-          ),
-
-          const SizedBox(width: 12),
-
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  product.name,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
+                if (isDiscounted)
+                  Positioned(
+                    top: 4,
+                    right: 4,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: Colors.redAccent,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        'Diskon ${(product as DiscountedProduct).discount.toInt()}%',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                PriceLabel(price: product.price),
-                const SizedBox(height: 4),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CategoryTag(category: product.category),
-                    const FavoriteButton(),
-                  ],
-                ),
               ],
             ),
-          ),
-        ],
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    product.name,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  PriceLabel(price: product.price),
+                  const SizedBox(height: 4),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CategoryTag(category: product.category),
+                      const FavoriteButton(),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

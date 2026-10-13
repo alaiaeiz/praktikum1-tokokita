@@ -1,13 +1,12 @@
-String formatRupiah(double nominal) => 'Rp${nominal.toInt()}';
+import 'package:intl/intl.dart';
 
 class Product {
-  int id;
-  String name;
-  double price;
-  String category;
-  int stock;
-  String? imageUrl;
-  String? description;
+  final String id;
+  final String name;
+  final double price;
+  final String category;
+  final int stock;
+  final String? description;
 
   Product({
     required this.id,
@@ -15,19 +14,16 @@ class Product {
     required this.price,
     required this.category,
     required this.stock,
-    this.imageUrl,
     this.description,
   });
 
   String getStatusStok() {
-    if (stock > 10) return 'Tersedia';
-    if (stock > 0 && stock <= 10) return 'Stok Terbatas';
-    return 'Habis';
+    return stock > 0 ? 'Stok: $stock' : 'Habis';
   }
 }
 
 class DiscountedProduct extends Product {
-  double discount;
+  final double discount;
 
   DiscountedProduct({
     required super.id,
@@ -38,75 +34,15 @@ class DiscountedProduct extends Product {
     super.description,
     required this.discount,
   });
+
+  double get discountedPrice => price - (price * discount / 100);
 }
 
-List<Product> dummyProducts = [
-  DiscountedProduct(
-    id: 1,
-    name: 'Kemeja Flanel Elegan',
-    price: 120000,
-    category: 'Fashion',
-    stock: 15,
-    discount: 20.0,
-    description: 'Kemeja flanel bahan katun berkualitas tinggi, nyaman dipakai harian.',
-  ),
-  Product(
-    id: 2,
-    name: 'Kaos Polos Premium',
-    price: 50000,
-    category: 'Fashion',
-    stock: 5,
-    description: 'Kaos bahan Combed 30s adem dan menyerap keringat.',
-  ),
-  Product(
-    id: 3,
-    name: 'Sepatu Sneakers Running',
-    price: 250000,
-    category: 'Fashion',
-    stock: 0,
-    description: 'Sepatu lari ringan dengan bantalan empuk.',
-  ),
-  DiscountedProduct(
-    id: 4,
-    name: 'Laptop Gaming RTX 4060',
-    price: 15000000,
-    category: 'Elektronik',
-    stock: 2,
-    discount: 10.0,
-    description: 'Laptop performa tinggi untuk gaming dan render video berat.',
-  ),
-  Product(
-    id: 5,
-    name: 'Mouse Wireless Silent',
-    price: 150000,
-    category: 'Elektronik',
-    stock: 20,
-    description: 'Mouse nirkabel tanpa suara klik, cocok untuk kerja di perpustakaan.',
-  ),
-  DiscountedProduct(
-    id: 6,
-    name: 'Keripik Kentang Balado',
-    price: 15000,
-    category: 'Makanan',
-    stock: 50,
-    discount: 5.0,
-    description: 'Camilan keripik kentang renyah dengan bumbu balado asli.',
-  ),
-  Product(
-    id: 7,
-    name: 'Cokelat Batang Dark 70%',
-    price: 25000,
-    category: 'Makanan',
-    stock: 8,
-    description: 'Cokelat hitam premium kaya akan antioksidan.',
-  ),
-  DiscountedProduct(
-    id: 8,
-    name: 'Headphone Bluetooth Bass',
-    price: 350000,
-    category: 'Elektronik',
-    stock: 12,
-    discount: 15.0,
-    description: 'Suara bass mantap dengan ketahanan baterai hingga 20 jam.',
-  ),
-];
+String formatRupiah(double amount) {
+  final formatCurrency = NumberFormat.currency(
+    locale: 'id_ID',
+    symbol: 'Rp ',
+    decimalDigits: 0,
+  );
+  return formatCurrency.format(amount);
+}

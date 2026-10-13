@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../controllers/cart_controller.dart';
 import '../models/product.dart';
 
 class ProductDetailPage extends StatefulWidget {
@@ -9,20 +11,12 @@ class ProductDetailPage extends StatefulWidget {
 }
 
 class _ProductDetailPageState extends State<ProductDetailPage> {
+  final CartController cartController = Get.find();
   int quantity = 1;
 
-  void _increment() {
-    setState(() {
-      quantity++;
-    });
-  }
-
+  void _increment() => setState(() => quantity++);
   void _decrement() {
-    if (quantity > 1) {
-      setState(() {
-        quantity--;
-      });
-    }
+    if (quantity > 1) setState(() => quantity--);
   }
 
   @override
@@ -38,7 +32,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         elevation: 1,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.blue),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Get.back(),
         ),
       ),
       body: SingleChildScrollView(
@@ -77,7 +71,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 ],
               ),
             ),
-
             Container(
               padding: const EdgeInsets.all(16),
               color: Colors.white,
@@ -86,19 +79,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 children: [
                   Text(
                     product.name,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     formatRupiah(product.price),
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green,
-                    ),
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green),
                   ),
                   const SizedBox(height: 12),
                   Row(
@@ -119,9 +105,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 ],
               ),
             ),
-
             const SizedBox(height: 8),
-
             Container(
               padding: const EdgeInsets.all(16),
               width: double.infinity,
@@ -129,10 +113,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Deskripsi Produk',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
+                  const Text('Deskripsi Produk', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
                   Text(
                     product.description ?? 'Belum ada deskripsi untuk produk ini.',
@@ -144,7 +125,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           ],
         ),
       ),
-
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -166,40 +146,30 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               ),
               child: Row(
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.remove, size: 18),
-                    onPressed: _decrement,
-                  ),
-                  Text(
-                    '$quantity',
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.add, size: 18),
-                    onPressed: _increment,
-                  ),
+                  IconButton(icon: const Icon(Icons.remove, size: 18), onPressed: _decrement),
+                  Text('$quantity', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  IconButton(icon: const Icon(Icons.add, size: 18), onPressed: _increment),
                 ],
               ),
             ),
             const SizedBox(width: 16),
-
             Expanded(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 ),
                 onPressed: product.stock == 0
                     ? null
                     : () {
-                        Navigator.pop(context, quantity);
+                        // Diperbaiki: Tutup halaman dulu, baru panggil add to cart & snackbar
+                        Get.back();
+                        cartController.addToCart(product, qty: quantity);
                       },
                 child: Text(
-                  product.stock == 0 ? 'Stok Habis' : 'Tambah ke Keranjang',
+                  product.stock == 0 ? 'Stok Habis' : 'Tambah ke Keranjang ($quantity)',
                   style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                 ),
               ),

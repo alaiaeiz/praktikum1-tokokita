@@ -7,28 +7,28 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profil Saya'),
+        title: const Text('Profil Pengguna'),
         backgroundColor: Colors.white,
         elevation: 1,
       ),
-      body: Center(
+      body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CircleAvatar(
-              radius: 45,
-              backgroundColor: Colors.blue.shade100,
-              child: const Icon(Icons.person, size: 50, color: Colors.blue),
+              radius: 50,
+              backgroundColor: Colors.blueAccent,
+              child: Icon(Icons.person, size: 60, color: Colors.white),
             ),
-            const SizedBox(height: 16),
-            const Text(
+            SizedBox(height: 16),
+            Text(
               'Amelia Putri Aqiilah',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 4),
-            const Text(
-              'NIM: 3337240049',
-              style: TextStyle(color: Colors.grey, fontSize: 14),
+            SizedBox(height: 8),
+            Text(
+              'Mahasiswa Informatika',
+              style: TextStyle(fontSize: 14, color: Colors.grey),
             ),
           ],
         ),

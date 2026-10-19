@@ -1,49 +1,33 @@
 import 'package:flutter/material.dart';
 import '../models/product.dart';
+import '../services/product_service.dart';
 import '../widgets/product_card.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final List<Product> dummyProducts = [
-      Product(
-        id: '1',
-        name: 'Laptop ASUS ROG',
-        price: 15000000,
-        category: 'Elektronik',
-        stock: 5,
-        description: 'Laptop gaming performa tinggi dengan prosesor terkini dan kartu grafis mumpuni untuk kebutuhan gaming serta rendering berat.',
-      ),
-      DiscountedProduct(
-        id: '2',
-        name: 'Smartphone Samsung',
-        price: 4500000,
-        category: 'Elektronik',
-        stock: 10,
-        discount: 10,
-        description: 'Smartphone layar AMOLED jernih dengan baterai tahan lama dan kamera beresolusi tinggi.',
-      ),
-      Product(
-        id: '3',
-        name: 'Sepatu Running Nike',
-        price: 1200000,
-        category: 'Olahraga',
-        stock: 0,
-        description: 'Sepatu lari yang ringan dan nyaman digunakan untuk olahraga sehari-hari.',
-      ),
-      DiscountedProduct(
-        id: '4',
-        name: 'Kemeja Flanel Casual',
-        price: 250000,
-        category: 'Pakaian',
-        stock: 15,
-        discount: 15,
-        description: 'Kemeja flanel bahan lembut, adem, dan cocok untuk gaya kasual sehari-hari.',
-      ),
-    ];
+  State<HomePage> createState() => _HomePageState();
+}
 
+class _HomePageState extends State<HomePage> {
+  final ProductService productService = ProductService();
+  late Future<List<Product>> futureProducts;
+
+  @override
+  void initState() {
+    super.initState();
+    futureProducts = productService.fetchProducts();
+  }
+
+  void _loadProducts() {
+    setState(() {
+      futureProducts = productService.fetchProducts();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
@@ -52,81 +36,131 @@ class HomePage extends StatelessWidget {
         elevation: 0.5,
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications_none, color: Colors.black87),
-            onPressed: () {},
+            icon: const Icon(Icons.refresh, color: Colors.black87),
+            onPressed: _loadProducts,
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Search Bar Awal
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey.shade300),
-                ),
-                child: const TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Cari produk di TokoKita...',
-                    border: InputBorder.none,
-                    icon: Icon(Icons.search, color: Colors.grey),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          _loadProducts();
+          await futureProducts;
+        },
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                  child: const TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Cari produk di TokoKita...',
+                      border: InputBorder.none,
+                      icon: Icon(Icons.search, color: Colors.grey),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              // Banner Promosi
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.blue.shade600, Colors.blue.shade400],
+                const SizedBox(height: 16),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.blue.shade600, Colors.blue.shade400],
+                    ),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  borderRadius: BorderRadius.circular(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Promo Jumat Sabtu Minggu (JSM)',
+                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Berlaku hanya pada 23 - 25 Oktober 2026',
+                        style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 12),
+                      ),
+                    ],
+                  ),
                 ),
-                child: const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Promo Spesial Praktikum!',
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Dapatkan diskon menarik untuk berbagai produk elektronik.',
-                      style: TextStyle(color: Colors.white70, fontSize: 12),
-                    ),
-                  ],
+                const SizedBox(height: 20),
+                const Text(
+                  'Daftar Produk Tokokita',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Daftar Produk',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 12),
-              // Grid Produk Original
-              GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: dummyProducts.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  childAspectRatio: 0.72,
+                const SizedBox(height: 12),
+                
+                FutureBuilder<List<Product>>(
+                  future: futureProducts,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 40),
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    }
+                  
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 40),
+                          child: Column(
+                            children: [
+                              const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                              const SizedBox(height: 8),
+                              Text('Gagal memuat produk: ${snapshot.error}', textAlign: TextAlign.center),
+                              const SizedBox(height: 12),
+                              ElevatedButton.icon(
+                                onPressed: _loadProducts,
+                                icon: const Icon(Icons.refresh),
+                                label: const Text('Coba Lagi'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+
+                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 40),
+                          child: Text('Tidak ada produk tersedia.'),
+                        ),
+                      );
+                    }
+
+                    final products = snapshot.data!;
+                    return GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: products.length,
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                        childAspectRatio: 0.72,
+                      ),
+                      itemBuilder: (context, index) {
+                        return ProductCard(product: products[index]);
+                      },
+                    );
+                  },
                 ),
-                itemBuilder: (context, index) {
-                  return ProductCard(product: dummyProducts[index]);
-                },
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

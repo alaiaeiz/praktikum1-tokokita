@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import '../controllers/cart_controller.dart';
+import '../controllers/wishlist_controller.dart';
 import 'home_page.dart';
 import 'cart_page.dart';
 import 'profile_page.dart';
@@ -15,13 +17,25 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
 
-  final CartController cartController = Get.put(CartController());
+  late final CartController cartController;
 
   final List<Widget> _pages = [
     const HomePage(),
     const CartPage(),
     const ProfilePage(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Mempertahankan controller keranjang yang sudah digunakan.
+    cartController = Get.put(CartController());
+
+    // Inisialisasi controller wishlist.
+    // onInit() akan memuat data dari SharedPreferences.
+    Get.put(WishlistController());
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -33,46 +47,53 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _pages[_selectedIndex],
+
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           const BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Beranda',
           ),
+
           BottomNavigationBarItem(
-            icon: Obx(() => Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    const Icon(Icons.shopping_cart),
-                    if (cartController.totalItem > 0)
-                      Positioned(
-                        right: -6,
-                        top: -6,
-                        child: Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: const BoxDecoration(
-                            color: Colors.red,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Text(
-                            '${cartController.totalItem}',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
+            icon: Obx(
+              () => Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  const Icon(Icons.shopping_cart),
+
+                  if (cartController.totalItem > 0)
+                    Positioned(
+                      right: -6,
+                      top: -6,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: const BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Text(
+                          '${cartController.totalItem}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
-                  ],
-                )),
+                    ),
+                ],
+              ),
+            ),
             label: 'Keranjang',
           ),
+
           const BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Profil',
           ),
         ],
+
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.blue,
         onTap: _onItemTapped,

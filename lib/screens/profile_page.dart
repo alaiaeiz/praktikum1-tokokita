@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import 'wishlist_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -11,27 +14,79 @@ class ProfilePage extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 1,
       ),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircleAvatar(
+
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          const SizedBox(height: 24),
+
+          const Center(
+            child: CircleAvatar(
               radius: 50,
               backgroundColor: Colors.blueAccent,
-              child: Icon(Icons.person, size: 60, color: Colors.white),
+              child: Icon(
+                Icons.person,
+                size: 60,
+                color: Colors.white,
+              ),
             ),
-            SizedBox(height: 16),
-            Text(
+          ),
+
+          const SizedBox(height: 16),
+
+          const Center(
+            child: Text(
               'Amelia Putri Aqiilah',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            SizedBox(height: 8),
-            Text(
+          ),
+
+          const SizedBox(height: 8),
+
+          const Center(
+            child: Text(
               'Mahasiswa Informatika',
-              style: TextStyle(fontSize: 14, color: Colors.grey),
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey,
+              ),
             ),
-          ],
-        ),
+          ),
+
+          const SizedBox(height: 32),
+
+          const Divider(),
+
+          ListTile(
+            leading: const Icon(
+              Icons.favorite,
+              color: Colors.red,
+            ),
+            title: const Text(
+              'Wishlist',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            subtitle: const Text(
+              'Lihat produk favorit kamu',
+            ),
+            trailing: const Icon(
+              Icons.arrow_forward_ios,
+              size: 16,
+            ),
+            onTap: () {
+              Get.to(
+                () => const WishlistPage(),
+              );
+            },
+          ),
+
+          const Divider(),
+        ],
       ),
     );
   }

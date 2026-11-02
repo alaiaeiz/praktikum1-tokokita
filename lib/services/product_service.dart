@@ -10,7 +10,6 @@ class ProductService {
       print('Mengirim HTTP GET ke $baseUrl...');
       final response = await http.get(Uri.parse(baseUrl));
 
-      // Cetak status code ke debug console agar terlihat
       print('Response Status Code: ${response.statusCode}');
 
       if (response.statusCode == 200) {

@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../controllers/wishlist_controller.dart';
 import '../models/product.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
 
-  const ProductCard({super.key, required this.product});
+  const ProductCard({
+    super.key,
+    required this.product,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,24 +35,33 @@ class ProductCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Gambar / Icon Container
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.blue.shade50,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(12),
+                  ),
                 ),
                 child: Stack(
                   children: [
                     const Center(
-                      child: Icon(Icons.shopping_bag, size: 54, color: Colors.blue),
+                      child: Icon(
+                        Icons.shopping_bag,
+                        size: 54,
+                        color: Colors.blue,
+                      ),
                     ),
+
                     if (isDiscounted)
                       Positioned(
                         top: 8,
                         left: 8,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.redAccent,
                             borderRadius: BorderRadius.circular(4),
@@ -62,16 +76,19 @@ class ProductCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                    const Positioned(
+
+                    Positioned(
                       top: 8,
                       right: 8,
-                      child: FavoriteButton(),
+                      child: FavoriteButton(
+                        productId: product.id,
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
-            // Detail Informasi Produk
+
             Padding(
               padding: const EdgeInsets.all(10),
               child: Column(
@@ -79,27 +96,50 @@ class ProductCard extends StatelessWidget {
                 children: [
                   Text(
                     product.name,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
+
                   const SizedBox(height: 4),
+
                   Text(
                     formatRupiah(product.price),
-                    style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: 12),
+                    style: const TextStyle(
+                      color: Colors.green,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
                   ),
+
                   const SizedBox(height: 4),
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        product.category,
-                        style: TextStyle(color: Colors.grey.shade600, fontSize: 10),
+                      Expanded(
+                        child: Text(
+                          product.category,
+                          style: TextStyle(
+                            color: Colors.grey.shade600,
+                            fontSize: 10,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
+
+                      const SizedBox(width: 4),
+
                       Text(
                         product.getStatusStok(),
                         style: TextStyle(
-                          color: product.stock > 0 ? Colors.blue : Colors.red,
+                          color: product.stock > 0
+                              ? Colors.blue
+                              : Colors.red,
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
                         ),
@@ -116,36 +156,45 @@ class ProductCard extends StatelessWidget {
   }
 }
 
-class FavoriteButton extends StatefulWidget {
-  const FavoriteButton({super.key});
+class FavoriteButton extends StatelessWidget {
+  final String productId;
 
-  @override
-  State<FavoriteButton> createState() => _FavoriteButtonState();
-}
-
-class _FavoriteButtonState extends State<FavoriteButton> {
-  bool isFavorite = false;
+  const FavoriteButton({
+    super.key,
+    required this.productId,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          isFavorite = !isFavorite;
-        });
-      },
-      child: Container(
-        padding: const EdgeInsets.all(4),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          shape: BoxShape.circle,
+    final WishlistController wishlistController =
+        Get.find<WishlistController>();
+
+    return Obx(() {
+      final bool isFavorite =
+          wishlistController.isFavorite(productId);
+
+      return Material(
+        color: Colors.white,
+        shape: const CircleBorder(),
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: () {
+            wishlistController.toggleFavorite(productId);
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(6),
+            child: Icon(
+              isFavorite
+                  ? Icons.favorite
+                  : Icons.favorite_border,
+              color: isFavorite
+                  ? Colors.red
+                  : Colors.grey,
+              size: 18,
+            ),
+          ),
         ),
-        child: Icon(
-          isFavorite ? Icons.favorite : Icons.favorite_border,
-          color: isFavorite ? Colors.red : Colors.grey,
-          size: 18,
-        ),
-      ),
-    );
+      );
+    });
   }
 }

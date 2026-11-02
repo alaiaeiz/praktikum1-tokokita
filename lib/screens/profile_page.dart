@@ -1,7 +1,9 @@
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'wishlist_page.dart';
+import 'order_history_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -60,6 +62,7 @@ class ProfilePage extends StatelessWidget {
 
           const Divider(),
 
+          // Menu Wishlist.
           ListTile(
             leading: const Icon(
               Icons.favorite,
@@ -81,6 +84,34 @@ class ProfilePage extends StatelessWidget {
             onTap: () {
               Get.to(
                 () => const WishlistPage(),
+              );
+            },
+          ),
+
+          const Divider(),
+
+          // Menu Riwayat Pesanan.
+          ListTile(
+            leading: const Icon(
+              Icons.receipt_long,
+              color: Colors.blue,
+            ),
+            title: const Text(
+              'Riwayat Pesanan',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            subtitle: const Text(
+              'Lihat dan kelola pesanan kamu',
+            ),
+            trailing: const Icon(
+              Icons.arrow_forward_ios,
+              size: 16,
+            ),
+            onTap: () {
+              Get.to(
+                () => const OrderHistoryPage(),
               );
             },
           ),

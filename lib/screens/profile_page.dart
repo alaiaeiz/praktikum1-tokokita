@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'wishlist_page.dart';
 import 'order_history_page.dart';
@@ -8,8 +9,63 @@ import 'order_history_page.dart';
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
+  // Proses logout.
+  Future<void> _logout() async {
+    final bool? confirmed = await Get.dialog<bool>(
+      AlertDialog(
+        title: const Text('Logout'),
+        content: const Text(
+          'Apakah kamu yakin ingin keluar dari akun TokoKita?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Get.back(result: false);
+            },
+            child: const Text('Batal'),
+          ),
+
+          ElevatedButton(
+            onPressed: () {
+              Get.back(result: true);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Logout'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    try {
+      await FirebaseAuth.instance.signOut();
+
+      // AuthGate otomatis menampilkan LoginPage
+      // ketika sesi pengguna berakhir.
+
+    } on FirebaseAuthException catch (e) {
+      Get.snackbar(
+        'Logout Gagal',
+        e.message ?? 'Tidak dapat keluar dari akun.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } catch (e) {
+      Get.snackbar(
+        'Terjadi Kesalahan',
+        'Tidak dapat melakukan logout.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final User? currentUser = FirebaseAuth.instance.currentUser;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profil Pengguna'),
@@ -54,6 +110,20 @@ class ProfilePage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.grey,
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 8),
+
+          // Email pengguna dari Firebase Authentication.
+          Center(
+            child: Text(
+              currentUser?.email ?? 'Email tidak tersedia',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 14,
+                color: Colors.blue,
               ),
             ),
           ),
@@ -114,6 +184,29 @@ class ProfilePage extends StatelessWidget {
                 () => const OrderHistoryPage(),
               );
             },
+          ),
+
+          const Divider(),
+
+          const SizedBox(height: 12),
+
+          // Tombol logout.
+          ListTile(
+            leading: const Icon(
+              Icons.logout,
+              color: Colors.red,
+            ),
+            title: const Text(
+              'Logout',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: Colors.red,
+              ),
+            ),
+            subtitle: const Text(
+              'Keluar dari akun TokoKita',
+            ),
+            onTap: _logout,
           ),
 
           const Divider(),

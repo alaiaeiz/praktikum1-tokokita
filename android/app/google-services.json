@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "160548181843",
+    "project_id": "tokokita-126ba",
+    "storage_bucket": "tokokita-126ba.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:160548181843:android:b7ffd3de5ad0654a3333a6",
+        "android_client_info": {
+          "package_name": "com.example.tokokita"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxVd5pV5yhQHndgwle_tkO8dy2XKcNHu0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

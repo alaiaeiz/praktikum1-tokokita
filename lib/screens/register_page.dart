@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
@@ -13,11 +12,9 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController _emailController =
-      TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
 
-  final TextEditingController _passwordController =
-      TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   final TextEditingController _confirmPasswordController =
       TextEditingController();
@@ -40,9 +37,7 @@ class _RegisterPageState extends State<RegisterPage> {
       return 'Email wajib diisi.';
     }
 
-    final emailRegex = RegExp(
-      r'^[\w.+-]+@[\w-]+(\.[\w-]+)+$',
-    );
+    final emailRegex = RegExp(r'^[\w.+-]+@[\w-]+(\.[\w-]+)+$');
 
     if (!emailRegex.hasMatch(value.trim())) {
       return 'Format email tidak valid.';
@@ -185,10 +180,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   const Text(
                     'Buat Akun TokoKita',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
 
                   const SizedBox(height: 8),
@@ -196,9 +188,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   const Text(
                     'Daftarkan akun untuk mulai berbelanja.',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.grey,
-                    ),
+                    style: TextStyle(color: Colors.grey),
                   ),
 
                   const SizedBox(height: 32),
@@ -269,8 +259,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                         onPressed: () {
                           setState(() {
-                            _obscureConfirmPassword =
-                                !_obscureConfirmPassword;
+                            _obscureConfirmPassword = !_obscureConfirmPassword;
                           });
                         },
                       ),
@@ -298,9 +287,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
 
                       child: _isLoading
-                          ? const CircularProgressIndicator(
-                              color: Colors.white,
-                            )
+                          ? const CircularProgressIndicator(color: Colors.white)
                           : const Text(
                               'Daftar',
                               style: TextStyle(

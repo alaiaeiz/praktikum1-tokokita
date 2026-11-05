@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
@@ -13,11 +12,9 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController _emailController =
-      TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
 
-  final TextEditingController _passwordController =
-      TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   bool _isLoading = false;
   bool _obscurePassword = true;
@@ -35,9 +32,7 @@ class _LoginPageState extends State<LoginPage> {
       return 'Email wajib diisi.';
     }
 
-    final emailRegex = RegExp(
-      r'^[\w.+-]+@[\w-]+(\.[\w-]+)+$',
-    );
+    final emailRegex = RegExp(r'^[\w.+-]+@[\w-]+(\.[\w-]+)+$');
 
     if (!emailRegex.hasMatch(value.trim())) {
       return 'Format email tidak valid.';
@@ -154,21 +149,14 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Icon(
-                    Icons.shopping_bag,
-                    size: 80,
-                    color: Colors.blue,
-                  ),
+                  const Icon(Icons.shopping_bag, size: 80, color: Colors.blue),
 
                   const SizedBox(height: 20),
 
                   const Text(
                     'Selamat Datang di TokoKita',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
 
                   const SizedBox(height: 8),
@@ -176,9 +164,7 @@ class _LoginPageState extends State<LoginPage> {
                   const Text(
                     'Silakan login untuk melanjutkan.',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.grey,
-                    ),
+                    style: TextStyle(color: Colors.grey),
                   ),
 
                   const SizedBox(height: 32),
@@ -248,9 +234,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
 
                       child: _isLoading
-                          ? const CircularProgressIndicator(
-                              color: Colors.white,
-                            )
+                          ? const CircularProgressIndicator(color: Colors.white)
                           : const Text(
                               'Login',
                               style: TextStyle(
@@ -267,17 +251,13 @@ class _LoginPageState extends State<LoginPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
-                        'Belum punya akun? ',
-                      ),
+                      const Text('Belum punya akun? '),
 
                       TextButton(
                         onPressed: () {
                           Get.toNamed('/register');
                         },
-                        child: const Text(
-                          'Daftar Sekarang',
-                        ),
+                        child: const Text('Daftar Sekarang'),
                       ),
                     ],
                   ),

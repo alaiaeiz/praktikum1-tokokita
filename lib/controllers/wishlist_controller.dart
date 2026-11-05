@@ -1,4 +1,3 @@
-
 import 'package:get/get.dart';
 
 import '../services/wishlist_service.dart';
@@ -23,10 +22,7 @@ class WishlistController extends GetxController {
         ..clear()
         ..addAll(ids);
     } catch (error) {
-      Get.snackbar(
-        'Wishlist',
-        'Gagal memuat wishlist: $error',
-      );
+      Get.snackbar('Wishlist', 'Gagal memuat wishlist: $error');
     } finally {
       isLoaded.value = true;
     }
@@ -48,9 +44,7 @@ class WishlistController extends GetxController {
     }
 
     try {
-      await _wishlistService.saveFavoriteIds(
-        updatedIds.toList(),
-      );
+      await _wishlistService.saveFavoriteIds(updatedIds.toList());
 
       favoriteIds
         ..clear()
@@ -65,32 +59,23 @@ class WishlistController extends GetxController {
         duration: const Duration(seconds: 2),
       );
     } catch (error) {
-      Get.snackbar(
-        'Wishlist',
-        'Gagal memperbarui wishlist: $error',
-      );
+      Get.snackbar('Wishlist', 'Gagal memperbarui wishlist: $error');
     }
   }
 
   Future<void> removeFavorite(String productId) async {
     if (!favoriteIds.contains(productId)) return;
 
-    final updatedIds = favoriteIds.toSet()
-      ..remove(productId);
+    final updatedIds = favoriteIds.toSet()..remove(productId);
 
     try {
-      await _wishlistService.saveFavoriteIds(
-        updatedIds.toList(),
-      );
+      await _wishlistService.saveFavoriteIds(updatedIds.toList());
 
       favoriteIds
         ..clear()
         ..addAll(updatedIds);
     } catch (error) {
-      Get.snackbar(
-        'Wishlist',
-        'Gagal menghapus produk: $error',
-      );
+      Get.snackbar('Wishlist', 'Gagal menghapus produk: $error');
     }
   }
 }

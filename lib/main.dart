@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -23,9 +22,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Inisialisasi Firebase.
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Inisialisasi SQLite FFI untuk Windows dan Linux.
   if (Platform.isWindows || Platform.isLinux) {
@@ -49,9 +46,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
 
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blue,
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
 
@@ -59,38 +54,17 @@ class MyApp extends StatelessWidget {
 
       getPages: [
         // Authentication gate.
-        GetPage(
-          name: '/',
-          page: () => const AuthGate(),
-        ),
+        GetPage(name: '/', page: () => const AuthGate()),
 
         // Authentication pages.
-        GetPage(
-          name: '/login',
-          page: () => const LoginPage(),
-        ),
-        GetPage(
-          name: '/register',
-          page: () => const RegisterPage(),
-        ),
+        GetPage(name: '/login', page: () => const LoginPage()),
+        GetPage(name: '/register', page: () => const RegisterPage()),
 
         // Existing application pages.
-        GetPage(
-          name: '/detail',
-          page: () => const ProductDetailPage(),
-        ),
-        GetPage(
-          name: '/cart',
-          page: () => const CartPage(),
-        ),
-        GetPage(
-          name: '/profile',
-          page: () => const ProfilePage(),
-        ),
-        GetPage(
-          name: '/checkout',
-          page: () => const CheckoutPage(),
-        ),
+        GetPage(name: '/detail', page: () => const ProductDetailPage()),
+        GetPage(name: '/cart', page: () => const CartPage()),
+        GetPage(name: '/profile', page: () => const ProfilePage()),
+        GetPage(name: '/checkout', page: () => const CheckoutPage()),
       ],
     );
   }
@@ -108,18 +82,14 @@ class AuthGate extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
+            body: Center(child: CircularProgressIndicator()),
           );
         }
 
         if (snapshot.hasError) {
           return Scaffold(
             body: Center(
-              child: Text(
-                'Gagal memeriksa status login: ${snapshot.error}',
-              ),
+              child: Text('Gagal memeriksa status login: ${snapshot.error}'),
             ),
           );
         }

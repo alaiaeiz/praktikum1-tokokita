@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import '../controllers/cart_controller.dart';
 import '../models/product.dart';
 import 'checkout_page.dart';
@@ -43,9 +44,16 @@ class CartPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.shopping_cart_outlined, size: 80, color: Colors.grey),
+                Icon(
+                  Icons.shopping_cart_outlined,
+                  size: 80,
+                  color: Colors.grey,
+                ),
                 SizedBox(height: 16),
-                Text('Keranjang kamu masih kosong', style: TextStyle(color: Colors.grey, fontSize: 16)),
+                Text(
+                  'Keranjang kamu masih kosong',
+                  style: TextStyle(color: Colors.grey, fontSize: 16),
+                ),
               ],
             ),
           );
@@ -61,33 +69,61 @@ class CartPage extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
-                    const Icon(Icons.shopping_bag, size: 40, color: Colors.blue),
+                    const Icon(
+                      Icons.shopping_bag,
+                      size: 40,
+                      color: Colors.blue,
+                    ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(cartItem.product.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                          Text(
+                            cartItem.product.name,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
                           const SizedBox(height: 4),
-                          Text(formatRupiah(cartItem.subtotal), style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
+                          Text(
+                            formatRupiah(cartItem.subtotal),
+                            style: const TextStyle(
+                              color: Colors.green,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ],
                       ),
                     ),
                     Row(
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.remove_circle_outline, size: 20),
-                          onPressed: () => cartController.decrementQuantity(cartItem),
+                          icon: const Icon(
+                            Icons.remove_circle_outline,
+                            size: 20,
+                          ),
+                          onPressed: () =>
+                              cartController.decrementQuantity(cartItem),
                         ),
-                        Text('${cartItem.quantity}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                        Text(
+                          '${cartItem.quantity}',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
                         IconButton(
                           icon: const Icon(Icons.add_circle_outline, size: 20),
-                          onPressed: () => cartController.incrementQuantity(cartItem),
+                          onPressed: () =>
+                              cartController.incrementQuantity(cartItem),
                         ),
                       ],
                     ),
                     IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.redAccent, size: 20),
+                      icon: const Icon(
+                        Icons.delete,
+                        color: Colors.redAccent,
+                        size: 20,
+                      ),
                       onPressed: () => cartController.removeFromCart(cartItem),
                     ),
                   ],
@@ -119,10 +155,17 @@ class CartPage extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Total Harga:', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                  const Text(
+                    'Total Harga:',
+                    style: TextStyle(color: Colors.grey, fontSize: 12),
+                  ),
                   Text(
                     formatRupiah(cartController.totalHarga),
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green,
+                    ),
                   ),
                 ],
               ),
@@ -130,13 +173,21 @@ class CartPage extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
                 onPressed: () {
                   Get.to(() => const CheckoutPage());
                 },
-                child: const Text('Checkout', style: TextStyle(fontWeight: FontWeight.bold)),
+                child: const Text(
+                  'Checkout',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
             ],
           ),

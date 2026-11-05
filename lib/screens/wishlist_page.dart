@@ -14,8 +14,7 @@ class WishlistPage extends StatefulWidget {
 }
 
 class _WishlistPageState extends State<WishlistPage> {
-  final WishlistController wishlistController =
-      Get.find<WishlistController>();
+  final WishlistController wishlistController = Get.find<WishlistController>();
 
   final ProductService productService = ProductService();
 
@@ -48,9 +47,7 @@ class _WishlistPageState extends State<WishlistPage> {
 
       body: Obx(() {
         if (!wishlistController.isLoaded.value) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return const Center(child: CircularProgressIndicator());
         }
 
         if (wishlistController.favoriteIds.isEmpty) {
@@ -58,27 +55,17 @@ class _WishlistPageState extends State<WishlistPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.favorite_border,
-                  size: 72,
-                  color: Colors.grey,
-                ),
+                Icon(Icons.favorite_border, size: 72, color: Colors.grey),
                 SizedBox(height: 12),
                 Text(
                   'Wishlist kamu masih kosong.',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                  ),
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
                 ),
                 SizedBox(height: 6),
                 Text(
                   'Tekan ikon hati pada produk untuk menyimpannya.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
                 ),
               ],
             ),
@@ -89,11 +76,8 @@ class _WishlistPageState extends State<WishlistPage> {
           future: futureProducts,
 
           builder: (context, snapshot) {
-            if (snapshot.connectionState ==
-                ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
             }
 
             if (snapshot.hasError) {
@@ -130,20 +114,15 @@ class _WishlistPageState extends State<WishlistPage> {
               );
             }
 
-            final List<Product> products =
-                snapshot.data ?? <Product>[];
+            final List<Product> products = snapshot.data ?? <Product>[];
 
-            final List<Product> favoriteProducts =
-                products.where((product) {
-              return wishlistController.favoriteIds
-                  .contains(product.id);
+            final List<Product> favoriteProducts = products.where((product) {
+              return wishlistController.favoriteIds.contains(product.id);
             }).toList();
 
             if (favoriteProducts.isEmpty) {
               return const Center(
-                child: Text(
-                  'Produk favorit tidak ditemukan.',
-                ),
+                child: Text('Produk favorit tidak ditemukan.'),
               );
             }
 
@@ -152,8 +131,7 @@ class _WishlistPageState extends State<WishlistPage> {
 
               itemCount: favoriteProducts.length,
 
-              gridDelegate:
-                  const SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
@@ -161,9 +139,7 @@ class _WishlistPageState extends State<WishlistPage> {
               ),
 
               itemBuilder: (context, index) {
-                return ProductCard(
-                  product: favoriteProducts[index],
-                );
+                return ProductCard(product: favoriteProducts[index]);
               },
             );
           },

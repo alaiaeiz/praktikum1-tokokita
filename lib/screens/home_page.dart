@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../models/product.dart';
 import '../services/product_service.dart';
 import '../widgets/product_card.dart';
@@ -31,7 +32,10 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        title: const Text('TokoKita', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),
+        title: const Text(
+          'TokoKita',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
+        ),
         backgroundColor: Colors.white,
         elevation: 0.5,
         actions: [
@@ -83,12 +87,19 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       const Text(
                         'Promo Jumat Sabtu Minggu (JSM)',
-                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         'Berlaku hanya pada 23 - 25 Oktober 2026',
-                        style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 12),
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.9),
+                          fontSize: 12,
+                        ),
                       ),
                     ],
                   ),
@@ -99,7 +110,7 @@ class _HomePageState extends State<HomePage> {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 12),
-                
+
                 FutureBuilder<List<Product>>(
                   future: futureProducts,
                   builder: (context, snapshot) {
@@ -111,16 +122,23 @@ class _HomePageState extends State<HomePage> {
                         ),
                       );
                     }
-                  
+
                     if (snapshot.hasError) {
                       return Center(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 40),
                           child: Column(
                             children: [
-                              const Icon(Icons.error_outline, size: 48, color: Colors.red),
+                              const Icon(
+                                Icons.error_outline,
+                                size: 48,
+                                color: Colors.red,
+                              ),
                               const SizedBox(height: 8),
-                              Text('Gagal memuat produk: ${snapshot.error}', textAlign: TextAlign.center),
+                              Text(
+                                'Gagal memuat produk: ${snapshot.error}',
+                                textAlign: TextAlign.center,
+                              ),
                               const SizedBox(height: 12),
                               ElevatedButton.icon(
                                 onPressed: _loadProducts,
@@ -147,12 +165,13 @@ class _HomePageState extends State<HomePage> {
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: products.length,
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 0.72,
-                      ),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                            childAspectRatio: 0.72,
+                          ),
                       itemBuilder: (context, index) {
                         return ProductCard(product: products[index]);
                       },

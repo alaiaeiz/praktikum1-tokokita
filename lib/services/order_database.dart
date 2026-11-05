@@ -1,4 +1,3 @@
-
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -27,18 +26,11 @@ class OrderDatabase {
     final databasePath = await getDatabasesPath();
     final path = join(databasePath, fileName);
 
-    return await openDatabase(
-      path,
-      version: 1,
-      onCreate: _createDB,
-    );
+    return await openDatabase(path, version: 1, onCreate: _createDB);
   }
 
   // Membuat tabel orders.
-  Future<void> _createDB(
-    Database db,
-    int version,
-  ) async {
+  Future<void> _createDB(Database db, int version) async {
     await db.execute('''
       CREATE TABLE orders (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -63,9 +55,7 @@ class OrderDatabase {
 
   // READ: Mengambil seluruh riwayat pesanan.
   // Filter status menggunakan SQL WHERE.
-  Future<List<Order>> getAllOrders({
-    String? status,
-  }) async {
+  Future<List<Order>> getAllOrders({String? status}) async {
     final db = await instance.database;
 
     final normalizedStatus = status?.trim();
@@ -75,9 +65,7 @@ class OrderDatabase {
     final List<Map<String, Object?>> result = await db.query(
       'orders',
       where: hasFilter ? 'status LIKE ?' : null,
-      whereArgs: hasFilter
-          ? ['%$normalizedStatus%']
-          : null,
+      whereArgs: hasFilter ? ['%$normalizedStatus%'] : null,
       orderBy: 'tanggal DESC',
     );
 
@@ -103,10 +91,6 @@ class OrderDatabase {
   Future<int> deleteOrder(int id) async {
     final db = await instance.database;
 
-    return await db.delete(
-      'orders',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    return await db.delete('orders', where: 'id = ?', whereArgs: [id]);
   }
 }

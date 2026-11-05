@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import '../controllers/cart_controller.dart';
 import '../models/product.dart';
 
@@ -46,14 +47,21 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               child: Stack(
                 children: [
                   const Center(
-                    child: Icon(Icons.shopping_bag, size: 120, color: Colors.blue),
+                    child: Icon(
+                      Icons.shopping_bag,
+                      size: 120,
+                      color: Colors.blue,
+                    ),
                   ),
                   if (isDiscounted)
                     Positioned(
                       top: 16,
                       right: 16,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.redAccent,
                           borderRadius: BorderRadius.circular(8),
@@ -79,12 +87,19 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 children: [
                   Text(
                     product.name,
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     formatRupiah(product.price),
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green,
+                    ),
                   ),
                   const SizedBox(height: 12),
                   Row(
@@ -97,8 +112,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       const SizedBox(width: 8),
                       Chip(
                         label: Text(product.getStatusStok()),
-                        backgroundColor: product.stock > 0 ? Colors.green.shade50 : Colors.red.shade50,
-                        side: BorderSide(color: product.stock > 0 ? Colors.green.shade200 : Colors.red.shade200),
+                        backgroundColor: product.stock > 0
+                            ? Colors.green.shade50
+                            : Colors.red.shade50,
+                        side: BorderSide(
+                          color: product.stock > 0
+                              ? Colors.green.shade200
+                              : Colors.red.shade200,
+                        ),
                       ),
                     ],
                   ),
@@ -113,10 +134,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Deskripsi Produk', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  const Text(
+                    'Deskripsi Produk',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 8),
                   Text(
-                    product.description ?? 'Belum ada deskripsi untuk produk ini.',
+                    product.description ??
+                        'Belum ada deskripsi untuk produk ini.',
                     style: const TextStyle(color: Colors.black87, height: 1.4),
                   ),
                 ],
@@ -146,9 +171,21 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               ),
               child: Row(
                 children: [
-                  IconButton(icon: const Icon(Icons.remove, size: 18), onPressed: _decrement),
-                  Text('$quantity', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  IconButton(icon: const Icon(Icons.add, size: 18), onPressed: _increment),
+                  IconButton(
+                    icon: const Icon(Icons.remove, size: 18),
+                    onPressed: _decrement,
+                  ),
+                  Text(
+                    '$quantity',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.add, size: 18),
+                    onPressed: _increment,
+                  ),
                 ],
               ),
             ),
@@ -159,7 +196,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   backgroundColor: Colors.blue,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
                 onPressed: product.stock == 0
                     ? null
@@ -169,8 +208,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         cartController.addToCart(product, qty: quantity);
                       },
                 child: Text(
-                  product.stock == 0 ? 'Stok Habis' : 'Tambah ke Keranjang ($quantity)',
-                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  product.stock == 0
+                      ? 'Stok Habis'
+                      : 'Tambah ke Keranjang ($quantity)',
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -81,10 +80,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
             children: [
               const Text(
                 'Daftar Belanjaan',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
 
               const SizedBox(height: 12),
@@ -103,9 +99,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       ),
                       trailing: Text(
                         formatRupiah(item.subtotal),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     );
                   },
@@ -119,10 +113,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 children: [
                   const Text(
                     'Total Pembayaran:',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   Text(
                     formatRupiah(cartController.totalHarga),
@@ -143,15 +134,12 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 14,
-                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  onPressed:
-                      isProcessing ? null : _processCheckout,
+                  onPressed: isProcessing ? null : _processCheckout,
                   child: isProcessing
                       ? const SizedBox(
                           height: 20,

@@ -7,10 +7,7 @@ import '../models/product.dart';
 class ProductCard extends StatelessWidget {
   final Product product;
 
-  const ProductCard({
-    super.key,
-    required this.product,
-  });
+  const ProductCard({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -80,9 +77,7 @@ class ProductCard extends StatelessWidget {
                     Positioned(
                       top: 8,
                       right: 8,
-                      child: FavoriteButton(
-                        productId: product.id,
-                      ),
+                      child: FavoriteButton(productId: product.id),
                     ),
                   ],
                 ),
@@ -137,9 +132,7 @@ class ProductCard extends StatelessWidget {
                       Text(
                         product.getStatusStok(),
                         style: TextStyle(
-                          color: product.stock > 0
-                              ? Colors.blue
-                              : Colors.red,
+                          color: product.stock > 0 ? Colors.blue : Colors.red,
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
                         ),
@@ -159,10 +152,7 @@ class ProductCard extends StatelessWidget {
 class FavoriteButton extends StatelessWidget {
   final String productId;
 
-  const FavoriteButton({
-    super.key,
-    required this.productId,
-  });
+  const FavoriteButton({super.key, required this.productId});
 
   @override
   Widget build(BuildContext context) {
@@ -170,8 +160,7 @@ class FavoriteButton extends StatelessWidget {
         Get.find<WishlistController>();
 
     return Obx(() {
-      final bool isFavorite =
-          wishlistController.isFavorite(productId);
+      final bool isFavorite = wishlistController.isFavorite(productId);
 
       return Material(
         color: Colors.white,
@@ -184,12 +173,8 @@ class FavoriteButton extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(6),
             child: Icon(
-              isFavorite
-                  ? Icons.favorite
-                  : Icons.favorite_border,
-              color: isFavorite
-                  ? Colors.red
-                  : Colors.grey,
+              isFavorite ? Icons.favorite : Icons.favorite_border,
+              color: isFavorite ? Colors.red : Colors.grey,
               size: 18,
             ),
           ),

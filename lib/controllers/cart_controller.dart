@@ -1,4 +1,4 @@
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -6,36 +6,29 @@ import '../models/product.dart';
 import '../models/cart_item.dart';
 import '../models/order.dart';
 import '../services/order_database.dart';
+import '../services/firestore_order_service.dart';
 
 class CartController extends GetxController {
   var cartItems = <CartItem>[].obs;
 
   void addToCart(Product product, {int qty = 1}) {
-    final index = cartItems.indexWhere(
-      (item) => item.product.id == product.id,
-    );
+    final index = cartItems.indexWhere((item) => item.product.id == product.id);
 
     if (index >= 0) {
       cartItems[index].quantity += qty;
       cartItems.refresh();
     } else {
-      cartItems.add(
-        CartItem(product: product, quantity: qty),
-      );
+      cartItems.add(CartItem(product: product, quantity: qty));
     }
 
     Get.rawSnackbar(
-      message:
-          'Berhasil menambahkan $qty item "${product.name}" ke keranjang!',
+      message: 'Berhasil menambahkan $qty item "${product.name}" ke keranjang!',
       backgroundColor: const Color(0xFF4CAF50),
       snackPosition: SnackPosition.BOTTOM,
       duration: const Duration(seconds: 3),
       margin: const EdgeInsets.all(12),
       borderRadius: 8,
-      icon: const Icon(
-        Icons.check_circle,
-        color: Colors.white,
-      ),
+      icon: const Icon(Icons.check_circle, color: Colors.white),
       shouldIconPulse: true,
     );
   }
@@ -58,17 +51,13 @@ class CartController extends GetxController {
     cartItems.remove(item);
 
     Get.rawSnackbar(
-      message:
-          'Berhasil menghapus "${item.product.name}" dari keranjang!',
+      message: 'Berhasil menghapus "${item.product.name}" dari keranjang!',
       backgroundColor: Colors.redAccent,
       snackPosition: SnackPosition.BOTTOM,
       duration: const Duration(seconds: 3),
       margin: const EdgeInsets.all(12),
       borderRadius: 8,
-      icon: const Icon(
-        Icons.delete_forever,
-        color: Colors.white,
-      ),
+      icon: const Icon(Icons.delete_forever, color: Colors.white),
     );
   }
 
@@ -77,28 +66,27 @@ class CartController extends GetxController {
   }
 
   int get totalItem {
-    return cartItems.fold(
-      0,
-      (sum, item) => sum + item.quantity,
-    );
+    return cartItems.fold(0, (sum, item) => sum + item.quantity);
   }
 
   double get totalHarga {
-    return cartItems.fold(
-      0,
-      (sum, item) => sum + item.subtotal,
-    );
+    return cartItems.fold(0, (sum, item) => sum + item.subtotal);
   }
 
-  // CHECKOUT: Menyimpan pesanan ke SQLite.
+  // CHECKOUT: Menyimpan pesanan ke Firestore dan SQLite.
   Future<int> checkout() async {
     if (cartItems.isEmpty) {
       throw Exception('Keranjang masih kosong.');
     }
 
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      throw Exception('Kamu harus login sebelum melakukan checkout.');
+    }
+
     // Membuat salinan data produk dari keranjang.
-    final List<Map<String, dynamic>> orderItems =
-        cartItems.map((item) {
+    final List<Map<String, dynamic>> orderItems = cartItems.map((item) {
       return {
         'productId': item.product.id,
         'namaProduk': item.product.name,
@@ -108,21 +96,48 @@ class CartController extends GetxController {
       };
     }).toList();
 
-    // Membuat object pesanan.
+    final tanggal = DateTime.now().toIso8601String();
+    final total = totalHarga;
+    const status = 'Diproses';
+
+    // Membuat object pesanan untuk SQLite.
     final order = Order(
-      tanggal: DateTime.now().toIso8601String(),
+      tanggal: tanggal,
       daftarItem: orderItems,
-      totalHarga: totalHarga,
-      status: 'Diproses',
+      totalHarga: total,
+      status: status,
     );
 
-    // Simpan pesanan terlebih dahulu.
-    final orderId =
-        await OrderDatabase.instance.insertOrder(order);
+    String? firestoreDocumentId;
 
-    // Keranjang hanya dikosongkan jika penyimpanan berhasil.
-    clearCart();
+    try {
+      // 1. Simpan ke Firestore terlebih dahulu.
+      firestoreDocumentId = await FirestoreOrderService.instance.createOrder(
+        uid: user.uid,
+        daftarItem: orderItems,
+        totalHarga: total,
+        status: status,
+      );
 
-    return orderId;
+      // 2. Simpan juga ke SQLite.
+      final orderId = await OrderDatabase.instance.insertOrder(order);
+
+      // 3. Kosongkan keranjang jika kedua penyimpanan berhasil.
+      clearCart();
+
+      return orderId;
+    } catch (error) {
+      // Jika SQLite gagal setelah Firestore berhasil,
+      // coba hapus dokumen Firestore yang baru dibuat.
+      if (firestoreDocumentId != null) {
+        try {
+          await FirestoreOrderService.instance.deleteOrder(firestoreDocumentId);
+        } catch (_) {
+          // Pertahankan error utama jika rollback juga gagal.
+        }
+      }
+
+      rethrow;
+    }
   }
 }

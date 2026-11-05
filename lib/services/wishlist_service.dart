@@ -14,10 +14,7 @@ class WishlistService {
   Future<void> saveFavoriteIds(List<String> ids) async {
     final preferences = await SharedPreferences.getInstance();
 
-    final success = await preferences.setStringList(
-      _favoriteIdsKey,
-      ids,
-    );
+    final success = await preferences.setStringList(_favoriteIdsKey, ids);
 
     if (!success) {
       throw Exception('Gagal menyimpan wishlist.');

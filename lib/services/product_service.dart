@@ -1,5 +1,7 @@
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
+
 import '../models/product.dart';
 
 class ProductService {
@@ -14,13 +16,19 @@ class ProductService {
 
       if (response.statusCode == 200) {
         List<dynamic> body = jsonDecode(response.body);
-        List<Product> products = body.map((dynamic item) => Product.fromJson(item)).toList();
+        List<Product> products = body
+            .map((dynamic item) => Product.fromJson(item))
+            .toList();
         return products;
       } else {
-        throw Exception('Gagal memuat produk dari server (Status: ${response.statusCode})');
+        throw Exception(
+          'Gagal memuat produk dari server (Status: ${response.statusCode})',
+        );
       }
     } catch (e) {
-      throw Exception('Koneksi internet bermasalah atau gagal terhubung ke server.');
+      throw Exception(
+        'Koneksi internet bermasalah atau gagal terhubung ke server.',
+      );
     }
   }
 
@@ -30,7 +38,9 @@ class ProductService {
     if (response.statusCode == 200) {
       return Product.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception('Gagal memuat detail produk (Status: ${response.statusCode})');
+      throw Exception(
+        'Gagal memuat detail produk (Status: ${response.statusCode})',
+      );
     }
   }
 }

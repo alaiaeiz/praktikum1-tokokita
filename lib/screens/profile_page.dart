@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -46,7 +45,6 @@ class ProfilePage extends StatelessWidget {
 
       // AuthGate otomatis menampilkan LoginPage
       // ketika sesi pengguna berakhir.
-
     } on FirebaseAuthException catch (e) {
       Get.snackbar(
         'Logout Gagal',
@@ -82,11 +80,7 @@ class ProfilePage extends StatelessWidget {
             child: CircleAvatar(
               radius: 50,
               backgroundColor: Colors.blueAccent,
-              child: Icon(
-                Icons.person,
-                size: 60,
-                color: Colors.white,
-              ),
+              child: Icon(Icons.person, size: 60, color: Colors.white),
             ),
           ),
 
@@ -95,10 +89,7 @@ class ProfilePage extends StatelessWidget {
           const Center(
             child: Text(
               'Amelia Putri Aqiilah',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
 
@@ -107,10 +98,7 @@ class ProfilePage extends StatelessWidget {
           const Center(
             child: Text(
               'Mahasiswa Informatika',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey),
             ),
           ),
 
@@ -121,10 +109,7 @@ class ProfilePage extends StatelessWidget {
             child: Text(
               currentUser?.email ?? 'Email tidak tersedia',
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 14,
-                color: Colors.blue,
-              ),
+              style: const TextStyle(fontSize: 14, color: Colors.blue),
             ),
           ),
 
@@ -134,27 +119,15 @@ class ProfilePage extends StatelessWidget {
 
           // Menu Wishlist.
           ListTile(
-            leading: const Icon(
-              Icons.favorite,
-              color: Colors.red,
-            ),
+            leading: const Icon(Icons.favorite, color: Colors.red),
             title: const Text(
               'Wishlist',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(fontWeight: FontWeight.w600),
             ),
-            subtitle: const Text(
-              'Lihat produk favorit kamu',
-            ),
-            trailing: const Icon(
-              Icons.arrow_forward_ios,
-              size: 16,
-            ),
+            subtitle: const Text('Lihat produk favorit kamu'),
+            trailing: const Icon(Icons.arrow_forward_ios, size: 16),
             onTap: () {
-              Get.to(
-                () => const WishlistPage(),
-              );
+              Get.to(() => const WishlistPage());
             },
           ),
 
@@ -162,27 +135,15 @@ class ProfilePage extends StatelessWidget {
 
           // Menu Riwayat Pesanan.
           ListTile(
-            leading: const Icon(
-              Icons.receipt_long,
-              color: Colors.blue,
-            ),
+            leading: const Icon(Icons.receipt_long, color: Colors.blue),
             title: const Text(
               'Riwayat Pesanan',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(fontWeight: FontWeight.w600),
             ),
-            subtitle: const Text(
-              'Lihat dan kelola pesanan kamu',
-            ),
-            trailing: const Icon(
-              Icons.arrow_forward_ios,
-              size: 16,
-            ),
+            subtitle: const Text('Lihat dan kelola pesanan kamu'),
+            trailing: const Icon(Icons.arrow_forward_ios, size: 16),
             onTap: () {
-              Get.to(
-                () => const OrderHistoryPage(),
-              );
+              Get.to(() => const OrderHistoryPage());
             },
           ),
 
@@ -192,20 +153,12 @@ class ProfilePage extends StatelessWidget {
 
           // Tombol logout.
           ListTile(
-            leading: const Icon(
-              Icons.logout,
-              color: Colors.red,
-            ),
+            leading: const Icon(Icons.logout, color: Colors.red),
             title: const Text(
               'Logout',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                color: Colors.red,
-              ),
+              style: TextStyle(fontWeight: FontWeight.w600, color: Colors.red),
             ),
-            subtitle: const Text(
-              'Keluar dari akun TokoKita',
-            ),
+            subtitle: const Text('Keluar dari akun TokoKita'),
             onTap: _logout,
           ),
 

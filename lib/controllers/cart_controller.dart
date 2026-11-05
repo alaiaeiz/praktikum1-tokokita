@@ -85,6 +85,9 @@ class CartController extends GetxController {
       throw Exception('Kamu harus login sebelum melakukan checkout.');
     }
 
+    // UID pengguna yang melakukan checkout.
+    final String uid = user.uid;
+
     // Membuat salinan data produk dari keranjang.
     final List<Map<String, dynamic>> orderItems = cartItems.map((item) {
       return {
@@ -102,6 +105,7 @@ class CartController extends GetxController {
 
     // Membuat object pesanan untuk SQLite.
     final order = Order(
+      uid: uid,
       tanggal: tanggal,
       daftarItem: orderItems,
       totalHarga: total,
@@ -113,13 +117,13 @@ class CartController extends GetxController {
     try {
       // 1. Simpan ke Firestore terlebih dahulu.
       firestoreDocumentId = await FirestoreOrderService.instance.createOrder(
-        uid: user.uid,
+        uid: uid,
         daftarItem: orderItems,
         totalHarga: total,
         status: status,
       );
 
-      // 2. Simpan juga ke SQLite.
+      // 2. Simpan ke SQLite beserta UID pengguna.
       final orderId = await OrderDatabase.instance.insertOrder(order);
 
       // 3. Kosongkan keranjang jika kedua penyimpanan berhasil.
@@ -131,7 +135,9 @@ class CartController extends GetxController {
       // coba hapus dokumen Firestore yang baru dibuat.
       if (firestoreDocumentId != null) {
         try {
-          await FirestoreOrderService.instance.deleteOrder(firestoreDocumentId);
+          await FirestoreOrderService.instance.deleteOrder(
+            firestoreDocumentId,
+          );
         } catch (_) {
           // Pertahankan error utama jika rollback juga gagal.
         }

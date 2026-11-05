@@ -30,12 +30,14 @@ class _OrderHistoryPageState extends State<OrderHistoryPage>
 
     tabController = TabController(length: 2, vsync: this);
 
-    futureOrders = OrderDatabase.instance.getAllOrders();
-
     final user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
+      futureOrders = OrderDatabase.instance.getAllOrders(uid: user.uid);
+
       firestoreOrders = FirestoreOrderService.instance.watchOrders(user.uid);
+    } else {
+      futureOrders = Future.value([]);
     }
   }
 
@@ -46,20 +48,39 @@ class _OrderHistoryPageState extends State<OrderHistoryPage>
     super.dispose();
   }
 
-  // Memuat ulang riwayat SQLite.
+  // Memuat ulang riwayat SQLite sesuai UID pengguna aktif.
   void _loadOrders({String? status}) {
+    final user = FirebaseAuth.instance.currentUser;
+
     setState(() {
-      futureOrders = OrderDatabase.instance.getAllOrders(status: status);
+      if (user == null) {
+        futureOrders = Future.value([]);
+      } else {
+        futureOrders = OrderDatabase.instance.getAllOrders(
+          uid: user.uid,
+          status: status,
+        );
+      }
     });
   }
 
   // Memperbarui status pesanan SQLite.
   Future<void> _updateLocalStatus(Order order, String newStatus) async {
-    if (order.id == null) return;
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null || order.id == null || order.uid != user.uid) {
+      Get.snackbar(
+        'Akses Ditolak',
+        'Pesanan ini bukan milik akun yang sedang login.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
 
     try {
       await OrderDatabase.instance.updateOrderStatus(
         id: order.id!,
+        uid: user.uid,
         status: newStatus,
       );
 
@@ -142,14 +163,26 @@ class _OrderHistoryPageState extends State<OrderHistoryPage>
 
   // Menghapus pesanan SQLite.
   Future<void> _deleteLocalOrder(Order order) async {
-    if (order.id == null) return;
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null || order.id == null || order.uid != user.uid) {
+      Get.snackbar(
+        'Akses Ditolak',
+        'Pesanan ini bukan milik akun yang sedang login.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
 
     final confirmed = await _confirmDelete();
 
     if (!confirmed) return;
 
     try {
-      await OrderDatabase.instance.deleteOrder(order.id!);
+      await OrderDatabase.instance.deleteOrder(
+        id: order.id!,
+        uid: user.uid,
+      );
 
       if (!mounted) return;
 
@@ -250,7 +283,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage>
         .join(', ');
   }
 
-  // Mencari status secara lokal untuk kedua sumber data.
+  // Mencari status untuk kedua sumber data.
   bool _matchesStatus(String status) {
     final keyword = searchController.text.trim().toLowerCase();
 
@@ -416,20 +449,14 @@ class _OrderHistoryPageState extends State<OrderHistoryPage>
                 ),
               ],
             ),
-
             const SizedBox(height: 8),
-
             Text(
               'Tanggal: $date',
               style: const TextStyle(color: Colors.grey, fontSize: 12),
             ),
-
             const SizedBox(height: 6),
-
             Text('Produk: $itemSummary'),
-
             const SizedBox(height: 6),
-
             Text(
               'Total: ${formatOrderPrice(total)}',
               style: const TextStyle(
@@ -437,9 +464,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage>
                 color: Colors.green,
               ),
             ),
-
             const Divider(),
-
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -494,7 +519,11 @@ class _OrderHistoryPageState extends State<OrderHistoryPage>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.receipt_long_outlined, size: 72, color: Colors.grey),
+          const Icon(
+            Icons.receipt_long_outlined,
+            size: 72,
+            color: Colors.grey,
+          ),
           const SizedBox(height: 12),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -530,19 +559,15 @@ class _OrderHistoryPageState extends State<OrderHistoryPage>
           ],
         ),
       ),
-
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(16),
             child: TextField(
               controller: searchController,
-              onChanged: (_) {
-                setState(() {
-                  futureOrders = OrderDatabase.instance.getAllOrders(
-                    status: searchController.text,
-                  );
-                });
+              onChanged: (value) {
+                _loadOrders(status: value);
+                setState(() {});
               },
               decoration: InputDecoration(
                 hintText: 'Cari berdasarkan status pesanan...',
@@ -560,11 +585,13 @@ class _OrderHistoryPageState extends State<OrderHistoryPage>
               ),
             ),
           ),
-
           Expanded(
             child: TabBarView(
               controller: tabController,
-              children: [_buildLocalOrders(), _buildCloudOrders()],
+              children: [
+                _buildLocalOrders(),
+                _buildCloudOrders(),
+              ],
             ),
           ),
         ],

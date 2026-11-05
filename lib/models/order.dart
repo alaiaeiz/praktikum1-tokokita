@@ -2,6 +2,7 @@ import 'dart:convert';
 
 class Order {
   final int? id;
+  final String? uid;
   final String tanggal;
   final List<Map<String, dynamic>> daftarItem;
   final double totalHarga;
@@ -9,6 +10,7 @@ class Order {
 
   Order({
     this.id,
+    required this.uid,
     required this.tanggal,
     required this.daftarItem,
     required this.totalHarga,
@@ -18,6 +20,7 @@ class Order {
   // Mengubah object Order menjadi Map untuk SQLite.
   Map<String, Object?> toMap() {
     final Map<String, Object?> data = {
+      'uid': uid,
       'tanggal': tanggal,
       'daftarItem': jsonEncode(daftarItem),
       'totalHarga': totalHarga,
@@ -37,7 +40,8 @@ class Order {
         jsonDecode(map['daftarItem'] as String) as List<dynamic>;
 
     return Order(
-      id: map['id'] as int,
+      id: map['id'] as int?,
+      uid: map['uid'] as String?,
       tanggal: map['tanggal'] as String,
       daftarItem: decodedItems.map((item) {
         return Map<String, dynamic>.from(item as Map);

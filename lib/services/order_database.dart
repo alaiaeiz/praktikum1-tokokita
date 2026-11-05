@@ -26,14 +26,20 @@ class OrderDatabase {
     final databasePath = await getDatabasesPath();
     final path = join(databasePath, fileName);
 
-    return await openDatabase(path, version: 1, onCreate: _createDB);
+    return await openDatabase(
+      path,
+      version: 2,
+      onCreate: _createDB,
+      onUpgrade: _upgradeDB,
+    );
   }
 
-  // Membuat tabel orders.
+  // Membuat tabel orders untuk database baru.
   Future<void> _createDB(Database db, int version) async {
     await db.execute('''
       CREATE TABLE orders (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        uid TEXT,
         tanggal TEXT NOT NULL,
         daftarItem TEXT NOT NULL,
         totalHarga REAL NOT NULL,
@@ -42,9 +48,28 @@ class OrderDatabase {
     ''');
   }
 
+  // Migrasi database versi lama ke versi baru.
+  // Data pesanan lama tetap dipertahankan.
+  Future<void> _upgradeDB(
+    Database db,
+    int oldVersion,
+    int newVersion,
+  ) async {
+    if (oldVersion < 2) {
+      await db.execute('''
+        ALTER TABLE orders
+        ADD COLUMN uid TEXT
+      ''');
+    }
+  }
+
   // CREATE: Menyimpan pesanan baru.
   Future<int> insertOrder(Order order) async {
     final db = await instance.database;
+
+    if (order.uid == null || order.uid!.isEmpty) {
+      throw Exception('UID pengguna tidak boleh kosong.');
+    }
 
     return await db.insert(
       'orders',
@@ -53,28 +78,38 @@ class OrderDatabase {
     );
   }
 
-  // READ: Mengambil seluruh riwayat pesanan.
-  // Filter status menggunakan SQL WHERE.
-  Future<List<Order>> getAllOrders({String? status}) async {
+  // READ: Mengambil riwayat pesanan milik pengguna aktif.
+  // Filter UID dan status menggunakan SQL WHERE.
+  Future<List<Order>> getAllOrders({
+    required String uid,
+    String? status,
+  }) async {
     final db = await instance.database;
 
+    final List<String> conditions = ['uid = ?'];
+    final List<Object?> arguments = [uid];
+
     final normalizedStatus = status?.trim();
-    final bool hasFilter =
-        normalizedStatus != null && normalizedStatus.isNotEmpty;
+
+    if (normalizedStatus != null && normalizedStatus.isNotEmpty) {
+      conditions.add('status LIKE ?');
+      arguments.add('%$normalizedStatus%');
+    }
 
     final List<Map<String, Object?>> result = await db.query(
       'orders',
-      where: hasFilter ? 'status LIKE ?' : null,
-      whereArgs: hasFilter ? ['%$normalizedStatus%'] : null,
+      where: conditions.join(' AND '),
+      whereArgs: arguments,
       orderBy: 'tanggal DESC',
     );
 
     return result.map((map) => Order.fromMap(map)).toList();
   }
 
-  // UPDATE: Mengubah status pesanan.
+  // UPDATE: Mengubah status hanya pada pesanan milik pengguna aktif.
   Future<int> updateOrderStatus({
     required int id,
+    required String uid,
     required String status,
   }) async {
     final db = await instance.database;
@@ -82,15 +117,22 @@ class OrderDatabase {
     return await db.update(
       'orders',
       {'status': status},
-      where: 'id = ?',
-      whereArgs: [id],
+      where: 'id = ? AND uid = ?',
+      whereArgs: [id, uid],
     );
   }
 
-  // DELETE: Menghapus riwayat pesanan.
-  Future<int> deleteOrder(int id) async {
+  // DELETE: Menghapus hanya pesanan milik pengguna aktif.
+  Future<int> deleteOrder({
+    required int id,
+    required String uid,
+  }) async {
     final db = await instance.database;
 
-    return await db.delete('orders', where: 'id = ?', whereArgs: [id]);
+    return await db.delete(
+      'orders',
+      where: 'id = ? AND uid = ?',
+      whereArgs: [id, uid],
+    );
   }
 }

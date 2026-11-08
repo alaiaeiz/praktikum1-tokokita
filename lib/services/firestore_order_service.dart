@@ -9,7 +9,7 @@ class FirestoreOrderService {
       .instance
       .collection('orders');
 
-  // CREATE: Menyimpan pesanan pengguna ke Firestore.
+  // menyimpan pesanan pengguna ke firestore.
   Future<String> createOrder({
     required String uid,
     required List<Map<String, dynamic>> daftarItem,
@@ -27,7 +27,6 @@ class FirestoreOrderService {
     return document.id;
   }
 
-  // READ: Mengambil pesanan secara real-time berdasarkan UID.
   Stream<QuerySnapshot<Map<String, dynamic>>> watchOrders(String uid) {
     return _orders
         .where('uid', isEqualTo: uid)
@@ -35,7 +34,7 @@ class FirestoreOrderService {
         .snapshots();
   }
 
-  // UPDATE: Mengubah status pesanan.
+  // mengubah status pesanan.
   Future<void> updateOrderStatus({
     required String documentId,
     required String status,
@@ -43,7 +42,7 @@ class FirestoreOrderService {
     await _orders.doc(documentId).update({'status': status});
   }
 
-  // DELETE: Menghapus pesanan dari Firestore.
+  // menghapus pesanan dari firestore.
   Future<void> deleteOrder(String documentId) async {
     await _orders.doc(documentId).delete();
   }

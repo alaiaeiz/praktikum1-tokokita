@@ -10,7 +10,7 @@ class OrderDatabase {
 
   OrderDatabase._init();
 
-  // Mengakses database yang sudah tersedia.
+  // mengakses database yang sudah tersedia.
   Future<Database> get database async {
     if (_database != null) {
       return _database!;
@@ -21,7 +21,7 @@ class OrderDatabase {
     return _database!;
   }
 
-  // Membuka atau membuat database.
+  // membuka atau membuat database.
   Future<Database> _initDB(String fileName) async {
     final databasePath = await getDatabasesPath();
     final path = join(databasePath, fileName);
@@ -34,7 +34,7 @@ class OrderDatabase {
     );
   }
 
-  // Membuat tabel orders untuk database baru.
+  // membuat tabel orders untuk database baru.
   Future<void> _createDB(Database db, int version) async {
     await db.execute('''
       CREATE TABLE orders (
@@ -48,8 +48,6 @@ class OrderDatabase {
     ''');
   }
 
-  // Migrasi database versi lama ke versi baru.
-  // Data pesanan lama tetap dipertahankan.
   Future<void> _upgradeDB(
     Database db,
     int oldVersion,
@@ -63,7 +61,6 @@ class OrderDatabase {
     }
   }
 
-  // CREATE: Menyimpan pesanan baru.
   Future<int> insertOrder(Order order) async {
     final db = await instance.database;
 
@@ -78,8 +75,6 @@ class OrderDatabase {
     );
   }
 
-  // READ: Mengambil riwayat pesanan milik pengguna aktif.
-  // Filter UID dan status menggunakan SQL WHERE.
   Future<List<Order>> getAllOrders({
     required String uid,
     String? status,
@@ -106,7 +101,7 @@ class OrderDatabase {
     return result.map((map) => Order.fromMap(map)).toList();
   }
 
-  // UPDATE: Mengubah status hanya pada pesanan milik pengguna aktif.
+  // mengubah status hanya pada pesanan milik pengguna aktif.
   Future<int> updateOrderStatus({
     required int id,
     required String uid,
@@ -122,7 +117,7 @@ class OrderDatabase {
     );
   }
 
-  // DELETE: Menghapus hanya pesanan milik pengguna aktif.
+  // menghapus hanya pesanan milik pengguna aktif.
   Future<int> deleteOrder({
     required int id,
     required String uid,

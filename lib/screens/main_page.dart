@@ -29,11 +29,8 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
 
-    // Mempertahankan controller keranjang yang sudah digunakan.
     cartController = Get.put(CartController());
 
-    // Inisialisasi controller wishlist.
-    // onInit() akan memuat data dari SharedPreferences.
     Get.put(WishlistController());
   }
 

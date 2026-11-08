@@ -17,7 +17,6 @@ class Order {
     required this.status,
   });
 
-  // Mengubah object Order menjadi Map untuk SQLite.
   Map<String, Object?> toMap() {
     final Map<String, Object?> data = {
       'uid': uid,
@@ -34,7 +33,6 @@ class Order {
     return data;
   }
 
-  // Mengubah data Map dari SQLite menjadi object Order.
   factory Order.fromMap(Map<String, Object?> map) {
     final List<dynamic> decodedItems =
         jsonDecode(map['daftarItem'] as String) as List<dynamic>;

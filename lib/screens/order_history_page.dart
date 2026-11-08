@@ -48,7 +48,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage>
     super.dispose();
   }
 
-  // Memuat ulang riwayat SQLite sesuai UID pengguna aktif.
   void _loadOrders({String? status}) {
     final user = FirebaseAuth.instance.currentUser;
 
@@ -64,7 +63,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage>
     });
   }
 
-  // Memperbarui status pesanan SQLite.
   Future<void> _updateLocalStatus(Order order, String newStatus) async {
     final user = FirebaseAuth.instance.currentUser;
 
@@ -102,7 +100,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage>
     }
   }
 
-  // Memperbarui status pesanan Firestore.
   Future<void> _updateCloudStatus(String documentId, String newStatus) async {
     try {
       await FirestoreOrderService.instance.updateOrderStatus(
@@ -116,7 +113,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage>
         snackPosition: SnackPosition.BOTTOM,
       );
 
-      // StreamBuilder akan menerima perubahan secara otomatis.
     } catch (error) {
       Get.snackbar(
         'Gagal',
@@ -126,7 +122,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage>
     }
   }
 
-  // Dialog konfirmasi penghapusan.
   Future<bool> _confirmDelete() async {
     final bool? confirmed = await showDialog<bool>(
       context: context,
@@ -161,7 +156,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage>
     return confirmed == true;
   }
 
-  // Menghapus pesanan SQLite.
   Future<void> _deleteLocalOrder(Order order) async {
     final user = FirebaseAuth.instance.currentUser;
 
@@ -202,7 +196,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage>
     }
   }
 
-  // Menghapus pesanan Firestore.
   Future<void> _deleteCloudOrder(String documentId) async {
     final confirmed = await _confirmDelete();
 
@@ -217,7 +210,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage>
         snackPosition: SnackPosition.BOTTOM,
       );
 
-      // StreamBuilder akan memperbarui daftar secara otomatis.
     } catch (error) {
       Get.snackbar(
         'Gagal',
@@ -227,7 +219,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage>
     }
   }
 
-  // Format tanggal untuk data SQLite.
   String _formatLocalDate(String value) {
     final date = DateTime.tryParse(value);
 
@@ -236,7 +227,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage>
     return DateFormat('dd/MM/yyyy HH:mm').format(date.toLocal());
   }
 
-  // Format tanggal untuk data Firestore.
   String _formatCloudDate(dynamic value) {
     DateTime? date;
 
@@ -253,7 +243,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage>
     return DateFormat('dd/MM/yyyy HH:mm').format(date.toLocal());
   }
 
-  // Ringkasan produk dari pesanan SQLite.
   String _getLocalItemSummary(Order order) {
     return order.daftarItem
         .map((item) {
@@ -265,7 +254,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage>
         .join(', ');
   }
 
-  // Ringkasan produk dari pesanan Firestore.
   String _getCloudItemSummary(dynamic rawItems) {
     if (rawItems is! List || rawItems.isEmpty) {
       return 'Tidak ada detail produk';
@@ -283,7 +271,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage>
         .join(', ');
   }
 
-  // Mencari status untuk kedua sumber data.
   bool _matchesStatus(String status) {
     final keyword = searchController.text.trim().toLowerCase();
 
@@ -292,7 +279,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage>
     return status.toLowerCase().contains(keyword);
   }
 
-  // Tampilan daftar pesanan SQLite.
   Widget _buildLocalOrders() {
     return FutureBuilder<List<Order>>(
       future: futureOrders,
@@ -338,7 +324,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage>
     );
   }
 
-  // Tampilan daftar pesanan Firestore.
   Widget _buildCloudOrders() {
     if (firestoreOrders == null) {
       return _buildEmptyState('Silakan login untuk melihat pesanan Cloud.');
@@ -411,7 +396,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage>
     );
   }
 
-  // Widget kartu pesanan yang digunakan kedua tab.
   Widget _buildOrderCard({
     required String title,
     required String status,
@@ -600,7 +584,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage>
   }
 }
 
-// Format harga untuk halaman riwayat.
 String formatOrderPrice(double amount) {
   return 'Rp ${amount.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (match) => '${match[1]}.')}';
 }

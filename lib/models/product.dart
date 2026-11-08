@@ -51,7 +51,6 @@ class DiscountedProduct extends Product {
   double get discountedPrice => price - (price * discount / 100);
 }
 
-// Fungsi pembantu format Rupiah
 String formatRupiah(double amount) {
   return 'Rp ${amount.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')}';
 }

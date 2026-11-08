@@ -21,16 +21,13 @@ import 'screens/checkout_page.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Inisialisasi Firebase.
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // Inisialisasi SQLite FFI untuk Windows dan Linux.
   if (Platform.isWindows || Platform.isLinux) {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
   }
-
-  // Memastikan database SQLite tersedia.
+  
   await OrderDatabase.instance.database;
 
   runApp(const MyApp());
@@ -53,14 +50,14 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
 
       getPages: [
-        // Authentication gate.
+        // authentication gate.
         GetPage(name: '/', page: () => const AuthGate()),
 
-        // Authentication pages.
+        // authentication pages.
         GetPage(name: '/login', page: () => const LoginPage()),
         GetPage(name: '/register', page: () => const RegisterPage()),
 
-        // Existing application pages.
+        // existing application pages.
         GetPage(name: '/detail', page: () => const ProductDetailPage()),
         GetPage(name: '/cart', page: () => const CartPage()),
         GetPage(name: '/profile', page: () => const ProfilePage()),
@@ -70,7 +67,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// Mengecek status autentikasi pengguna.
+// mengecek status autentikasi pengguna.
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
 
@@ -94,12 +91,12 @@ class AuthGate extends StatelessWidget {
           );
         }
 
-        // Jika pengguna sudah login.
+        // jika pengguna sudah login.
         if (snapshot.hasData) {
           return const MainPage();
         }
 
-        // Jika pengguna belum login.
+        // jika pengguna belum login.
         return const LoginPage();
       },
     );

@@ -26,7 +26,6 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  // Validasi format email.
   String? _validateEmail(String? value) {
     if (value == null || value.trim().isEmpty) {
       return 'Email wajib diisi.';
@@ -41,7 +40,6 @@ class _LoginPageState extends State<LoginPage> {
     return null;
   }
 
-  // Validasi password.
   String? _validatePassword(String? value) {
     if (value == null || value.isEmpty) {
       return 'Password wajib diisi.';
@@ -54,7 +52,6 @@ class _LoginPageState extends State<LoginPage> {
     return null;
   }
 
-  // Pesan error Firebase Authentication.
   String _getErrorMessage(String code) {
     switch (code) {
       case 'invalid-email':
@@ -81,7 +78,6 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  // Proses login Firebase.
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) {
       return;
@@ -106,8 +102,6 @@ class _LoginPageState extends State<LoginPage> {
         backgroundColor: Colors.green.shade100,
       );
 
-      // AuthGate otomatis menampilkan MainPage
-      // ketika authStateChanges menerima pengguna.
     } on FirebaseAuthException catch (e) {
       if (!mounted) return;
 
@@ -169,7 +163,6 @@ class _LoginPageState extends State<LoginPage> {
 
                   const SizedBox(height: 32),
 
-                  // Input email.
                   TextFormField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
@@ -187,7 +180,6 @@ class _LoginPageState extends State<LoginPage> {
 
                   const SizedBox(height: 16),
 
-                  // Input password.
                   TextFormField(
                     controller: _passwordController,
                     obscureText: _obscurePassword,
@@ -219,7 +211,6 @@ class _LoginPageState extends State<LoginPage> {
 
                   const SizedBox(height: 24),
 
-                  // Tombol login.
                   SizedBox(
                     height: 50,
                     child: ElevatedButton(
@@ -247,7 +238,6 @@ class _LoginPageState extends State<LoginPage> {
 
                   const SizedBox(height: 20),
 
-                  // Navigasi ke register.
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

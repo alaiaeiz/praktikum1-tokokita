@@ -203,7 +203,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 onPressed: product.stock == 0
                     ? null
                     : () {
-                        // Diperbaiki: Tutup halaman dulu, baru panggil add to cart & snackbar
                         Get.back();
                         cartController.addToCart(product, qty: quantity);
                       },

@@ -8,7 +8,6 @@ import 'order_history_page.dart';
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
-  // Proses logout.
   Future<void> _logout() async {
     final bool? confirmed = await Get.dialog<bool>(
       AlertDialog(
@@ -43,8 +42,6 @@ class ProfilePage extends StatelessWidget {
     try {
       await FirebaseAuth.instance.signOut();
 
-      // AuthGate otomatis menampilkan LoginPage
-      // ketika sesi pengguna berakhir.
     } on FirebaseAuthException catch (e) {
       Get.snackbar(
         'Logout Gagal',
@@ -104,7 +101,6 @@ class ProfilePage extends StatelessWidget {
 
           const SizedBox(height: 8),
 
-          // Email pengguna dari Firebase Authentication.
           Center(
             child: Text(
               currentUser?.email ?? 'Email tidak tersedia',
@@ -117,7 +113,6 @@ class ProfilePage extends StatelessWidget {
 
           const Divider(),
 
-          // Menu Wishlist.
           ListTile(
             leading: const Icon(Icons.favorite, color: Colors.red),
             title: const Text(
@@ -133,7 +128,6 @@ class ProfilePage extends StatelessWidget {
 
           const Divider(),
 
-          // Menu Riwayat Pesanan.
           ListTile(
             leading: const Icon(Icons.receipt_long, color: Colors.blue),
             title: const Text(
@@ -151,7 +145,6 @@ class ProfilePage extends StatelessWidget {
 
           const SizedBox(height: 12),
 
-          // Tombol logout.
           ListTile(
             leading: const Icon(Icons.logout, color: Colors.red),
             title: const Text(

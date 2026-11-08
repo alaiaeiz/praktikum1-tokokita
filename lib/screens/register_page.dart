@@ -31,7 +31,6 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
-  // Validasi email.
   String? _validateEmail(String? value) {
     if (value == null || value.trim().isEmpty) {
       return 'Email wajib diisi.';
@@ -46,7 +45,6 @@ class _RegisterPageState extends State<RegisterPage> {
     return null;
   }
 
-  // Validasi password.
   String? _validatePassword(String? value) {
     if (value == null || value.isEmpty) {
       return 'Password wajib diisi.';
@@ -59,7 +57,6 @@ class _RegisterPageState extends State<RegisterPage> {
     return null;
   }
 
-  // Validasi konfirmasi password.
   String? _validateConfirmPassword(String? value) {
     if (value == null || value.isEmpty) {
       return 'Konfirmasi password wajib diisi.';
@@ -72,7 +69,6 @@ class _RegisterPageState extends State<RegisterPage> {
     return null;
   }
 
-  // Pesan error Firebase.
   String _getErrorMessage(String code) {
     switch (code) {
       case 'email-already-in-use':
@@ -95,7 +91,6 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
-  // Proses registrasi Firebase.
   Future<void> _register() async {
     if (!_formKey.currentState!.validate()) {
       return;
@@ -120,8 +115,6 @@ class _RegisterPageState extends State<RegisterPage> {
         backgroundColor: Colors.green.shade100,
       );
 
-      // Firebase otomatis membuat sesi login.
-      // AuthGate akan menampilkan MainPage.
     } on FirebaseAuthException catch (e) {
       if (!mounted) return;
 
@@ -193,7 +186,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   const SizedBox(height: 32),
 
-                  // Input email.
+                  // input email.
                   TextFormField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
@@ -210,7 +203,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   const SizedBox(height: 16),
 
-                  // Input password.
+                  // input password.
                   TextFormField(
                     controller: _passwordController,
                     obscureText: _obscurePassword,
@@ -241,7 +234,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   const SizedBox(height: 16),
 
-                  // Input konfirmasi password.
+                  // input konfirmasi password.
                   TextFormField(
                     controller: _confirmPasswordController,
                     obscureText: _obscureConfirmPassword,
@@ -272,7 +265,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   const SizedBox(height: 24),
 
-                  // Tombol register.
+                  // tombol register.
                   SizedBox(
                     height: 50,
                     child: ElevatedButton(
